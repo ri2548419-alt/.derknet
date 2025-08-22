@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>dark net — Demo Frontend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+  <!-- Top ARGB gradient line -->
+  <div class="topline"></div>
+
+  <!-- Header / Navbar -->
+  <header class="navbar">
+    <div class="brand">
+      <img src="https://i.postimg.cc/zf0N3GMK/IMG-20250816-WA0009.jpg" alt="dark net logo" class="logo"/>
+      <span class="title">dark net</span>
+    </div>
+    <nav class="menu" id="mainMenu">
+      <a href="#/dashboard">Dashboard</a>
+      <a href="#/referral">Referral</a>
+      <a href="#/earning">Earning</a>
+      <a href="#/withdraw">Withdraw</a>
+      <a href="#/profile">Profile</a>
+      <a href="#/admin">Admin Panel</a>
+      <button id="logoutBtn" class="btn small outline">Logout</button>
+    </nav>
+  </header>
+
+  <!-- Auth Screens -->
+  <main class="container">
+    <section id="login" class="card auth hidden">
+      <h2>লগইন</h2>
+      <form id="loginForm">
+        <label>Email</label>
+        <input type="email" id="loginEmail" required placeholder="you@example.com"/>
+        <label>Password</label>
+        <input type="password" id="loginPassword" required placeholder="••••••••"/>
+        <button type="submit" class="btn primary full">Login</button>
+      </form>
+      <p class="muted">নতুন একাউন্ট? <a href="#/register">Register</a></p>
+    </section>
+
+    <section id="register" class="card auth hidden">
+      <h2>রেজিস্ট্রেশন</h2>
+      <form id="registerForm">
+        <label>Name</label>
+        <input type="text" id="regName" required placeholder="আপনার নাম"/>
+        <label>Email</label>
+        <input type="email" id="regEmail" required placeholder="you@example.com"/>
+        <label>Phone</label>
+        <input type="tel" id="regPhone" required placeholder="01xxxxxxxxx" pattern="\d{10,15}"/>
+        <label>Password</label>
+        <input type="password" id="regPassword" minlength="4" required placeholder="কমপক্ষে 4 অক্ষর"/>
+        <button type="submit" class="btn primary full">Create Account</button>
+      </form>
+      <p class="muted">আগেই একাউন্ট আছে? <a href="#/login">Login</a></p>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <h3>প্রোফাইল</h3>
+          <div class="kv"><span>Name</span><strong id="dName">-</strong></div>
+          <div class="kv"><span>User ID (UID)</span><strong id="dUID">-</strong></div>
+          <div class="kv"><span>Balance</span><strong><span id="dBalance">0</span> ৳</strong></div>
+          <div class="kv"><span>Total Referrals</span><strong id="dRefs">0</strong></div>
+          <div class="kv"><span>Account Status</span><strong id="dStatus" class="badge">Inactive</strong></div>
+          <div class="actions">
+            <a class="btn outline" href="https://t.me/tadingbd" target="_blank" rel="noopener">Telegram</a>
+            <button id="activateBtn" class="btn primary">Activate Account</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>দ্রুত লিংক</h3>
+          <div class="quicklinks">
+            <a class="chip" href="#/referral">Referral</a>
+            <a class="chip" href="#/withdraw">Withdraw</a>
+            <a class="chip" href="#/profile">Profile</a>
+            <a class="chip" href="#/admin">Admin Panel</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activate Account -->
+    <section id="activate" class="card hidden">
+      <h3>একাউন্ট অ্যাক্টিভেশন</h3>
+      <p>আপনার একাউন্ট বর্তমানে <strong>Inactive</strong>। এক্টিভ করতে 500 টাকা সেন্ড মানি করুন।</p>
+      <div class="pay-options">
+        <label><input type="radio" name="paymethod" value="bkash" checked/> বিকাশ</label>
+        <label><input type="radio" name="paymethod" value="nagad"/> নগদ</label>
+      </div>
+      <div class="info">
+        <p><strong>Send Money to:</strong> <code id="payNumber">01700-000000</code></p>
+        <small>টাকা পাঠানোর পর নিচে Transaction ID দিন। (ডেমো প্রজেক্ট — রিয়েল পেমেন্ট নয়)</small>
+      </div>
+      <form id="activationForm" class="mt">
+        <label>Transaction ID</label>
+        <input type="text" id="txid" required placeholder="e.g., TX123ABC456"/>
+        <button class="btn primary">Submit for Review</button>
+      </form>
+      <p class="muted">একবারই রিকোয়েস্ট করা যাবে। স্ট্যাটাস: <span id="actStatus">Not Submitted</span></p>
+    </section>
+
+    <!-- Referral -->
+    <section id="referral" class="card hidden">
+      <h3>রেফারেল</h3>
+      <div class="kv">
+        <span>আপনার রেফারেল লিংক</span>
+        <div class="copyrow">
+          <input id="refLink" readonly />
+          <button id="copyRef" class="btn">Copy</button>
+        </div>
+      </div>
+      <div class="notice">
+        <p>রেফার থেকে রেজিস্টার করলে প্রথমে তাদের অ্যাকাউন্ট <strong>Inactive</strong> থাকবে। এডমিন অ্যাক্টিভ করলে আপনার ওয়ালেটে <strong>200 ৳</strong> যোগ হবে।</p>
+      </div>
+      <h4 class="mt">রেফারেল লিস্ট</h4>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>UID</th><th>Status</th><th>Date</th></tr>
+          </thead>
+          <tbody id="refTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Earning -->
+    <section id="earning" class="card hidden">
+      <h3>Earning</h3>
+      <p class="muted">দৈনিক ৫০০ টাকা ইনকাম — <strong>Coming soon</strong></p>
+    </section>
+
+    <!-- Withdraw -->
+    <section id="withdraw" class="card hidden">
+      <h3>Withdraw</h3>
+      <div class="kv"><span>আপনার ব্যালেন্স</span><strong><span id="wBalance">0</span> ৳</strong></div>
+      <p class="muted">Minimum Withdraw: <strong>300 ৳</strong></p>
+      <form id="withdrawForm" class="mt">
+        <label>মেথড</label>
+        <select id="wMethod">
+          <option value="bkash">বিকাশ</option>
+          <option value="nagad">নগদ</option>
+        </select>
+        <label>নাম্বার</label>
+        <input type="tel" id="wNumber" required placeholder="01xxxxxxxxx"/>
+        <label>পরিমাণ (৳)</label>
+        <input type="number" id="wAmount" min="1" required placeholder="300"/>
+        <button class="btn primary">Withdraw Request</button>
+      </form>
+      <h4 class="mt">আপনার Withdraw Requests</h4>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Method</th><th>Number</th><th>Amount</th><th>Status</th></tr>
+          </thead>
+          <tbody id="wTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section id="profile" class="card hidden">
+      <h3>Profile Settings</h3>
+      <form id="profileForm">
+        <label>Name</label>
+        <input type="text" id="pName" required />
+        <label>Email (read-only)</label>
+        <input type="email" id="pEmail" readonly />
+        <label>UID (read-only)</label>
+        <input type="text" id="pUID" readonly />
+        <label>New Password</label>
+        <input type="password" id="pPassword" placeholder="Change password"/>
+        <div class="row">
+          <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider"></span>
+          </label>
+          <span>Theme: <strong id="themeLabel">Dark</strong></span>
+        </div>
+        <button class="btn primary">Save Changes</button>
+      </form>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="admin" class="hidden">
+      <div class="card">
+        <div class="row spread">
+          <h3>Admin Panel</h3>
+          <button id="becomeAdmin" class="btn outline small">Become Admin (Demo)</button>
+        </div>
+        <div class="stats row">
+          <div class="stat"><span>Members</span><strong id="mTotal">0</strong></div>
+          <div class="stat"><span>Active</span><strong id="mActive">0</strong></div>
+          <div class="stat"><span>Inactive</span><strong id="mInactive">0</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Members List</h4>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>UID</th><th>Refs</th><th>Balance</th><th>Status</th></tr>
+            </thead>
+            <tbody id="membersTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Activation Requests</h4>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th>User</th><th>UID</th><th>Method</th><th>TxID</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="actTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Withdraw Requests</h4>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>User</th><th>Method</th><th>Number</th><th>Amount</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="adminWTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> dark net — Demo UI (Frontend only)</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
